@@ -1,0 +1,70 @@
+.page {
+    --primary-color: #1890ff;
+    --blue-8: #0050b3;
+    font-family: 'PingFang SC', "Asap", sans-serif;
+}
+
+.login {
+    overflow: hidden;
+    background-color: white;
+    padding: 40px 30px 30px 30px;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    transform: translate(-50%, -50%);
+    transition: transform 300ms, box-shadow 300ms;
+    box-shadow: 5px 10px 10px rgba(2, 128, 144, 0.2);
+}
+
+.login::before, .login::after {
+    content: "";
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 40% 45% 40% 35%;
+    z-index: -1;
+}
+
+.login::before {
+    left: 40%;
+    bottom: -130%;
+    background-color: rgba(69, 105, 144, 0.15);
+    animation: wawes 6s infinite linear;
+}
+
+.login::after {
+    left: 40%;
+    bottom: -130%;
+    background-color: rgba(2, 128, 144, 0.2);
+    animation: wawes 7s infinite;
+}
+
+
+.login > input[type='submit'] {
+    cursor: pointer;
+    color: #fff;
+    font-size: 16px;
+    text-transform: uppercase;
+    border: 0;
+    padding: 10px 0;
+    margin-top: 10px;
+    margin-left: -5px;
+    background-color: var(--primary-color);
+    transition: background-color 300ms;
+}
+
+.login > input[type='submit']:hover {
+    background-color: var(--blue-8);
+}
+
+@keyframes wawes {
+    form {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
