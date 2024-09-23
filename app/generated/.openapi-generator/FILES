@@ -1,4 +1,3 @@
-.openapi-generator-ignore
 apis/AuthApi.ts
 apis/RepositoryApi.ts
 apis/TaskApi.ts
@@ -18,5 +17,6 @@ models/TaskCreation.ts
 models/Todo.ts
 models/TodoCreate.ts
 models/TodoMutation.ts
+models/UserSummary.ts
 models/index.ts
 runtime.ts

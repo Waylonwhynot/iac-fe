@@ -28,6 +28,10 @@ import {
     TaskCreationToJSON,
 } from '../models/index';
 
+export interface CopyTaskRequest {
+    id: number;
+}
+
 export interface CreateTaskRequest {
     taskCreation: TaskCreation;
 }
@@ -45,6 +49,45 @@ export interface ListTasksRequest {
  * 
  */
 export class TaskApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async copyTaskRaw(requestParameters: CopyTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Task>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling copyTask().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("BearerTokenAuthentication", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/iac/task/{id}/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async copyTask(requestParameters: CopyTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Task> {
+        const response = await this.copyTaskRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */

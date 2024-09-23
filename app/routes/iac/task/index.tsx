@@ -30,8 +30,13 @@ export default function() {
     const dateRender = (date: Date) => dayjs(date).format('YYYY-MM-DD HH:mm');
     const colums = [
         { title: 'Repo', dataIndex: ["repository", "name"], key: 'repository' },
-        { title: 'Create time', dataIndex: 'createAt', key: 'createAt', render: dateRender },
-        { title: 'Update time', dataIndex: 'updateAt', key: 'updateAt', render: dateRender },
+        {
+            title: 'created_by',
+            dataIndex: ['createdBy', 'username'],
+            key: 'createdBy',
+        },
+        { title: 'Execute time', dataIndex: 'createAt', key: 'createAt', render: dateRender },
+        { title: 'Finish time', dataIndex: 'updateAt', key: 'updateAt', render: dateRender },
         { title: 'State', dataIndex: 'state', key: 'state', render: (state: number) => states[state] },
         { title: '', dataIndex: 'id', key: 'id', render: (id: number) => <Link to={`/iac/task/${id}`}>Detail</Link> },
     ];

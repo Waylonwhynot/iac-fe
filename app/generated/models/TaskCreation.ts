@@ -48,6 +48,12 @@ export interface TaskCreation {
      * @type {string}
      * @memberof TaskCreation
      */
+    inventories?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TaskCreation
+     */
     envvars?: string | null;
     /**
      * 
@@ -91,6 +97,7 @@ export function TaskCreationFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'playbook': json['playbook'] == null ? undefined : json['playbook'],
         'role': json['role'] == null ? undefined : json['role'],
         'tags': json['tags'] == null ? undefined : json['tags'],
+        'inventories': json['inventories'] == null ? undefined : json['inventories'],
         'envvars': json['envvars'] == null ? undefined : json['envvars'],
         'extravars': json['extravars'] == null ? undefined : json['extravars'],
         'forks': json['forks'] == null ? undefined : json['forks'],
@@ -108,6 +115,7 @@ export function TaskCreationToJSON(value?: TaskCreation | null): any {
         'playbook': value['playbook'],
         'role': value['role'],
         'tags': value['tags'],
+        'inventories': value['inventories'],
         'envvars': value['envvars'],
         'extravars': value['extravars'],
         'forks': value['forks'],

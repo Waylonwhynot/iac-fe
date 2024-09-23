@@ -50,6 +50,16 @@ export default function() {
             key: 'signature',
         },
         {
+            title: 'created_by',
+            dataIndex: ['createdBy', 'username'],
+            key: 'createdBy',
+        },
+        {
+            title: 'updated_by',
+            dataIndex: ['updatedBy', 'username'],
+            key: 'updatedBy',
+        },
+        {
             title: 'Created At',
             dataIndex: 'createdAt',
             key: 'createdAt',

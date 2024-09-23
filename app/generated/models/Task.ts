@@ -19,6 +19,12 @@ import {
     StateEnumFromJSONTyped,
     StateEnumToJSON,
 } from './StateEnum';
+import type { UserSummary } from './UserSummary';
+import {
+    UserSummaryFromJSON,
+    UserSummaryFromJSONTyped,
+    UserSummaryToJSON,
+} from './UserSummary';
 import type { RepositorySummary } from './RepositorySummary';
 import {
     RepositorySummaryFromJSON,
@@ -56,6 +62,24 @@ export interface Task {
      * @memberof Task
      */
     readonly deletedAt: Date;
+    /**
+     * 
+     * @type {UserSummary}
+     * @memberof Task
+     */
+    readonly createdBy: UserSummary;
+    /**
+     * 
+     * @type {UserSummary}
+     * @memberof Task
+     */
+    readonly updatedBy: UserSummary;
+    /**
+     * 
+     * @type {UserSummary}
+     * @memberof Task
+     */
+    readonly deletedBy: UserSummary;
     /**
      * 
      * @type {StateEnum}
@@ -97,6 +121,12 @@ export interface Task {
      * @type {string}
      * @memberof Task
      */
+    inventories?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Task
+     */
     envvars?: string | null;
     /**
      * 
@@ -128,6 +158,9 @@ export function instanceOfTask(value: object): value is Task {
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     if (!('deletedAt' in value) || value['deletedAt'] === undefined) return false;
+    if (!('createdBy' in value) || value['createdBy'] === undefined) return false;
+    if (!('updatedBy' in value) || value['updatedBy'] === undefined) return false;
+    if (!('deletedBy' in value) || value['deletedBy'] === undefined) return false;
     if (!('state' in value) || value['state'] === undefined) return false;
     if (!('output' in value) || value['output'] === undefined) return false;
     if (!('repository' in value) || value['repository'] === undefined) return false;
@@ -148,12 +181,16 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'deletedAt': (new Date(json['deleted_at'])),
+        'createdBy': UserSummaryFromJSON(json['created_by']),
+        'updatedBy': UserSummaryFromJSON(json['updated_by']),
+        'deletedBy': UserSummaryFromJSON(json['deleted_by']),
         'state': StateEnumFromJSON(json['state']),
         'output': json['output'],
         'repository': RepositorySummaryFromJSON(json['repository']),
         'playbook': json['playbook'] == null ? undefined : json['playbook'],
         'role': json['role'] == null ? undefined : json['role'],
         'tags': json['tags'] == null ? undefined : json['tags'],
+        'inventories': json['inventories'] == null ? undefined : json['inventories'],
         'envvars': json['envvars'] == null ? undefined : json['envvars'],
         'extravars': json['extravars'] == null ? undefined : json['extravars'],
         'forks': json['forks'] == null ? undefined : json['forks'],
@@ -161,7 +198,7 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
     };
 }
 
-export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'deleted_at'|'state'|'output'|'repository'> | null): any {
+export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'state'|'output'|'repository'> | null): any {
     if (value == null) {
         return value;
     }
@@ -170,6 +207,7 @@ export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'de
         'playbook': value['playbook'],
         'role': value['role'],
         'tags': value['tags'],
+        'inventories': value['inventories'],
         'envvars': value['envvars'],
         'extravars': value['extravars'],
         'forks': value['forks'],

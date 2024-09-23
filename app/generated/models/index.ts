@@ -13,3 +13,4 @@ export * from './TaskCreation';
 export * from './Todo';
 export * from './TodoCreate';
 export * from './TodoMutation';
+export * from './UserSummary';

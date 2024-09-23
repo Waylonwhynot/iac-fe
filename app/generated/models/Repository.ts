@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { UserSummary } from './UserSummary';
+import {
+    UserSummaryFromJSON,
+    UserSummaryFromJSONTyped,
+    UserSummaryToJSON,
+} from './UserSummary';
+
 /**
  * 
  * @export
@@ -45,6 +52,24 @@ export interface Repository {
     readonly deletedAt: Date;
     /**
      * 
+     * @type {UserSummary}
+     * @memberof Repository
+     */
+    readonly createdBy: UserSummary;
+    /**
+     * 
+     * @type {UserSummary}
+     * @memberof Repository
+     */
+    readonly updatedBy: UserSummary;
+    /**
+     * 
+     * @type {UserSummary}
+     * @memberof Repository
+     */
+    readonly deletedBy: UserSummary;
+    /**
+     * 
      * @type {string}
      * @memberof Repository
      */
@@ -71,6 +96,9 @@ export function instanceOfRepository(value: object): value is Repository {
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     if (!('deletedAt' in value) || value['deletedAt'] === undefined) return false;
+    if (!('createdBy' in value) || value['createdBy'] === undefined) return false;
+    if (!('updatedBy' in value) || value['updatedBy'] === undefined) return false;
+    if (!('deletedBy' in value) || value['deletedBy'] === undefined) return false;
     if (!('signature' in value) || value['signature'] === undefined) return false;
     if (!('store' in value) || value['store'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
@@ -91,13 +119,16 @@ export function RepositoryFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'deletedAt': (new Date(json['deleted_at'])),
+        'createdBy': UserSummaryFromJSON(json['created_by']),
+        'updatedBy': UserSummaryFromJSON(json['updated_by']),
+        'deletedBy': UserSummaryFromJSON(json['deleted_by']),
         'signature': json['signature'],
         'store': json['store'],
         'name': json['name'],
     };
 }
 
-export function RepositoryToJSON(value?: Omit<Repository, 'id'|'created_at'|'updated_at'|'deleted_at'|'signature'> | null): any {
+export function RepositoryToJSON(value?: Omit<Repository, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'signature'> | null): any {
     if (value == null) {
         return value;
     }
