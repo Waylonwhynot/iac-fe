@@ -13,18 +13,24 @@
  */
 
 import { mapValues } from '../runtime';
-import type { StateEnum } from './StateEnum';
-import {
-    StateEnumFromJSON,
-    StateEnumFromJSONTyped,
-    StateEnumToJSON,
-} from './StateEnum';
 import type { UserSummary } from './UserSummary';
 import {
     UserSummaryFromJSON,
     UserSummaryFromJSONTyped,
     UserSummaryToJSON,
 } from './UserSummary';
+import type { Crontab } from './Crontab';
+import {
+    CrontabFromJSON,
+    CrontabFromJSONTyped,
+    CrontabToJSON,
+} from './Crontab';
+import type { Interval } from './Interval';
+import {
+    IntervalFromJSON,
+    IntervalFromJSONTyped,
+    IntervalToJSON,
+} from './Interval';
 import type { ReleaseSummary } from './ReleaseSummary';
 import {
     ReleaseSummaryFromJSON,
@@ -35,125 +41,135 @@ import {
 /**
  * 
  * @export
- * @interface Task
+ * @interface PeriodicMission
  */
-export interface Task {
+export interface PeriodicMission {
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     readonly id: number;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     readonly createdAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     readonly updatedAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     readonly deletedAt: Date;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     readonly createdBy: UserSummary;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     readonly updatedBy: UserSummary;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     readonly deletedBy: UserSummary;
     /**
      * 
-     * @type {StateEnum}
-     * @memberof Task
+     * @type {Interval}
+     * @memberof PeriodicMission
      */
-    readonly state: StateEnum;
+    interval?: Interval;
     /**
      * 
-     * @type {string}
-     * @memberof Task
+     * @type {Crontab}
+     * @memberof PeriodicMission
      */
-    readonly output: string;
+    crontab?: Crontab;
     /**
      * 
      * @type {ReleaseSummary}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     readonly release: ReleaseSummary;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     playbook?: string;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     role?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     tags?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     inventories?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     envvars?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     extravars?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     forks?: number;
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof PeriodicMission
      */
     timeout?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PeriodicMission
+     */
+    name: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PeriodicMission
+     */
+    enabled?: boolean;
 }
 
-
-
 /**
- * Check if a given object implements the Task interface.
+ * Check if a given object implements the PeriodicMission interface.
  */
-export function instanceOfTask(value: object): value is Task {
+export function instanceOfPeriodicMission(value: object): value is PeriodicMission {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
@@ -161,17 +177,16 @@ export function instanceOfTask(value: object): value is Task {
     if (!('createdBy' in value) || value['createdBy'] === undefined) return false;
     if (!('updatedBy' in value) || value['updatedBy'] === undefined) return false;
     if (!('deletedBy' in value) || value['deletedBy'] === undefined) return false;
-    if (!('state' in value) || value['state'] === undefined) return false;
-    if (!('output' in value) || value['output'] === undefined) return false;
     if (!('release' in value) || value['release'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
-export function TaskFromJSON(json: any): Task {
-    return TaskFromJSONTyped(json, false);
+export function PeriodicMissionFromJSON(json: any): PeriodicMission {
+    return PeriodicMissionFromJSONTyped(json, false);
 }
 
-export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task {
+export function PeriodicMissionFromJSONTyped(json: any, ignoreDiscriminator: boolean): PeriodicMission {
     if (json == null) {
         return json;
     }
@@ -184,8 +199,8 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'createdBy': UserSummaryFromJSON(json['created_by']),
         'updatedBy': UserSummaryFromJSON(json['updated_by']),
         'deletedBy': UserSummaryFromJSON(json['deleted_by']),
-        'state': StateEnumFromJSON(json['state']),
-        'output': json['output'],
+        'interval': json['interval'] == null ? undefined : IntervalFromJSON(json['interval']),
+        'crontab': json['crontab'] == null ? undefined : CrontabFromJSON(json['crontab']),
         'release': ReleaseSummaryFromJSON(json['release']),
         'playbook': json['playbook'] == null ? undefined : json['playbook'],
         'role': json['role'] == null ? undefined : json['role'],
@@ -195,15 +210,19 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'extravars': json['extravars'] == null ? undefined : json['extravars'],
         'forks': json['forks'] == null ? undefined : json['forks'],
         'timeout': json['timeout'] == null ? undefined : json['timeout'],
+        'name': json['name'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
     };
 }
 
-export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'state'|'output'|'release'> | null): any {
+export function PeriodicMissionToJSON(value?: Omit<PeriodicMission, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'release'> | null): any {
     if (value == null) {
         return value;
     }
     return {
         
+        'interval': IntervalToJSON(value['interval']),
+        'crontab': CrontabToJSON(value['crontab']),
         'playbook': value['playbook'],
         'role': value['role'],
         'tags': value['tags'],
@@ -212,6 +231,8 @@ export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'de
         'extravars': value['extravars'],
         'forks': value['forks'],
         'timeout': value['timeout'],
+        'name': value['name'],
+        'enabled': value['enabled'],
     };
 }
 

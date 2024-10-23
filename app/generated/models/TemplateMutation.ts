@@ -14,86 +14,97 @@
 
 import { mapValues } from '../runtime';
 /**
- * 消除只读字段
+ * 
  * @export
- * @interface TaskCreation
+ * @interface TemplateMutation
  */
-export interface TaskCreation {
+export interface TemplateMutation {
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
-    release: number;
+    release?: number;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
     playbook?: string;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
     role?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
     tags?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
     inventories?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
     envvars?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
     extravars?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
     forks?: number;
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof TemplateMutation
      */
     timeout?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateMutation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateMutation
+     */
+    description?: string | null;
 }
 
 /**
- * Check if a given object implements the TaskCreation interface.
+ * Check if a given object implements the TemplateMutation interface.
  */
-export function instanceOfTaskCreation(value: object): value is TaskCreation {
-    if (!('release' in value) || value['release'] === undefined) return false;
+export function instanceOfTemplateMutation(value: object): value is TemplateMutation {
     return true;
 }
 
-export function TaskCreationFromJSON(json: any): TaskCreation {
-    return TaskCreationFromJSONTyped(json, false);
+export function TemplateMutationFromJSON(json: any): TemplateMutation {
+    return TemplateMutationFromJSONTyped(json, false);
 }
 
-export function TaskCreationFromJSONTyped(json: any, ignoreDiscriminator: boolean): TaskCreation {
+export function TemplateMutationFromJSONTyped(json: any, ignoreDiscriminator: boolean): TemplateMutation {
     if (json == null) {
         return json;
     }
     return {
         
-        'release': json['release'],
+        'release': json['release'] == null ? undefined : json['release'],
         'playbook': json['playbook'] == null ? undefined : json['playbook'],
         'role': json['role'] == null ? undefined : json['role'],
         'tags': json['tags'] == null ? undefined : json['tags'],
@@ -102,10 +113,12 @@ export function TaskCreationFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'extravars': json['extravars'] == null ? undefined : json['extravars'],
         'forks': json['forks'] == null ? undefined : json['forks'],
         'timeout': json['timeout'] == null ? undefined : json['timeout'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'description': json['description'] == null ? undefined : json['description'],
     };
 }
 
-export function TaskCreationToJSON(value?: TaskCreation | null): any {
+export function TemplateMutationToJSON(value?: TemplateMutation | null): any {
     if (value == null) {
         return value;
     }
@@ -120,6 +133,8 @@ export function TaskCreationToJSON(value?: TaskCreation | null): any {
         'extravars': value['extravars'],
         'forks': value['forks'],
         'timeout': value['timeout'],
+        'name': value['name'],
+        'description': value['description'],
     };
 }
 

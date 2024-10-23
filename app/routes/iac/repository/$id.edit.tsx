@@ -4,7 +4,7 @@ import { Section } from '~/components';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAsync } from '~/hooks';
 import { repositoryApi } from '~/api';
-import { Repository, UpdateRepositoryRequest } from '~/generated';
+import { Repository, RepositoryMutation, UpdateRepositoryRequest } from '~/generated';
 import { server } from '~/api/middlewares';
 
 
@@ -24,8 +24,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function() {
     const repository = useLoaderData<Repository>();
     const navigate = useNavigate();
-    const [form] = Form.useForm<UpdateRepositoryRequest>();
-    const [store, setStore] = useState<File>();
     const update = useAsync(repositoryApi.updateRepository.bind(repositoryApi));
 
     useEffect(() => {
@@ -37,31 +35,24 @@ export default function() {
     const goHome = () => {
         navigate('/iac/repository');
     };
-    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-        setStore(event.target?.files?.[0]);
-    };
 
-    const handleSubmit = (values: UpdateRepositoryRequest) => {
-        const request: UpdateRepositoryRequest = { id: repository.id };
-        if (values.name) {
-            request.name = values.name;
-        }
-        if (store) {
-            request.store = store;
-        }
-        update.run(request);
+    const handleSubmit = (values: RepositoryMutation) => {
+        update.run({ id: repository.id, repositoryMutation: values });
     };
 
     return (
         <>
             <PageHeader className="bg-white" title="Update Repository" onBack={goHome} />
             <Section>
-                <Form {...layout} method="post" onFinish={handleSubmit} form={form}>
-                    <Form.Item label="Name" name="name" initialValue={repository.name}>
+                <Form {...layout} method="post" onFinish={handleSubmit} initialValues={repository}>
+                    <Form.Item label="URL" name="url">
                         <Input />
                     </Form.Item>
-                    <Form.Item label="File" name="store">
-                        <Input type="file" name="store" onChange={handleFileUpload} />
+                    <Form.Item label="Token" name="token">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Provider" name="providerClass">
+                        <Input />
                     </Form.Item>
                     <Form.Item {...tailLayout}>
                         <Button type="primary" htmlType="submit">Update</Button>

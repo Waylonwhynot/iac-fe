@@ -19,12 +19,24 @@ import {
     StateEnumFromJSONTyped,
     StateEnumToJSON,
 } from './StateEnum';
+import type { Stats } from './Stats';
+import {
+    StatsFromJSON,
+    StatsFromJSONTyped,
+    StatsToJSON,
+} from './Stats';
 import type { UserSummary } from './UserSummary';
 import {
     UserSummaryFromJSON,
     UserSummaryFromJSONTyped,
     UserSummaryToJSON,
 } from './UserSummary';
+import type { PeriodicMissionSummary } from './PeriodicMissionSummary';
+import {
+    PeriodicMissionSummaryFromJSON,
+    PeriodicMissionSummaryFromJSONTyped,
+    PeriodicMissionSummaryToJSON,
+} from './PeriodicMissionSummary';
 import type { ReleaseSummary } from './ReleaseSummary';
 import {
     ReleaseSummaryFromJSON,
@@ -35,115 +47,127 @@ import {
 /**
  * 
  * @export
- * @interface Task
+ * @interface MissionDetail
  */
-export interface Task {
+export interface MissionDetail {
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly id: number;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly createdAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly updatedAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly deletedAt: Date;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly createdBy: UserSummary;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly updatedBy: UserSummary;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly deletedBy: UserSummary;
     /**
      * 
      * @type {StateEnum}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly state: StateEnum;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly output: string;
     /**
      * 
      * @type {ReleaseSummary}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     readonly release: ReleaseSummary;
     /**
      * 
+     * @type {PeriodicMissionSummary}
+     * @memberof MissionDetail
+     */
+    readonly fromPeriodic: PeriodicMissionSummary;
+    /**
+     * 
+     * @type {Array<Stats>}
+     * @memberof MissionDetail
+     */
+    readonly statsSet: Array<Stats>;
+    /**
+     * 
      * @type {string}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     playbook?: string;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     role?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     tags?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     inventories?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     envvars?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     extravars?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     forks?: number;
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof MissionDetail
      */
     timeout?: number;
 }
@@ -151,9 +175,9 @@ export interface Task {
 
 
 /**
- * Check if a given object implements the Task interface.
+ * Check if a given object implements the MissionDetail interface.
  */
-export function instanceOfTask(value: object): value is Task {
+export function instanceOfMissionDetail(value: object): value is MissionDetail {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
@@ -164,14 +188,16 @@ export function instanceOfTask(value: object): value is Task {
     if (!('state' in value) || value['state'] === undefined) return false;
     if (!('output' in value) || value['output'] === undefined) return false;
     if (!('release' in value) || value['release'] === undefined) return false;
+    if (!('fromPeriodic' in value) || value['fromPeriodic'] === undefined) return false;
+    if (!('statsSet' in value) || value['statsSet'] === undefined) return false;
     return true;
 }
 
-export function TaskFromJSON(json: any): Task {
-    return TaskFromJSONTyped(json, false);
+export function MissionDetailFromJSON(json: any): MissionDetail {
+    return MissionDetailFromJSONTyped(json, false);
 }
 
-export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task {
+export function MissionDetailFromJSONTyped(json: any, ignoreDiscriminator: boolean): MissionDetail {
     if (json == null) {
         return json;
     }
@@ -187,6 +213,8 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'state': StateEnumFromJSON(json['state']),
         'output': json['output'],
         'release': ReleaseSummaryFromJSON(json['release']),
+        'fromPeriodic': PeriodicMissionSummaryFromJSON(json['from_periodic']),
+        'statsSet': ((json['stats_set'] as Array<any>).map(StatsFromJSON)),
         'playbook': json['playbook'] == null ? undefined : json['playbook'],
         'role': json['role'] == null ? undefined : json['role'],
         'tags': json['tags'] == null ? undefined : json['tags'],
@@ -198,7 +226,7 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
     };
 }
 
-export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'state'|'output'|'release'> | null): any {
+export function MissionDetailToJSON(value?: Omit<MissionDetail, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'state'|'output'|'release'|'from_periodic'|'stats_set'> | null): any {
     if (value == null) {
         return value;
     }

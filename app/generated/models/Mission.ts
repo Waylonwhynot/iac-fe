@@ -25,6 +25,12 @@ import {
     UserSummaryFromJSONTyped,
     UserSummaryToJSON,
 } from './UserSummary';
+import type { PeriodicMissionSummary } from './PeriodicMissionSummary';
+import {
+    PeriodicMissionSummaryFromJSON,
+    PeriodicMissionSummaryFromJSONTyped,
+    PeriodicMissionSummaryToJSON,
+} from './PeriodicMissionSummary';
 import type { ReleaseSummary } from './ReleaseSummary';
 import {
     ReleaseSummaryFromJSON,
@@ -35,115 +41,121 @@ import {
 /**
  * 
  * @export
- * @interface Task
+ * @interface Mission
  */
-export interface Task {
+export interface Mission {
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly id: number;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly createdAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly updatedAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly deletedAt: Date;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly createdBy: UserSummary;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly updatedBy: UserSummary;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly deletedBy: UserSummary;
     /**
      * 
      * @type {StateEnum}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly state: StateEnum;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly output: string;
     /**
      * 
      * @type {ReleaseSummary}
-     * @memberof Task
+     * @memberof Mission
      */
     readonly release: ReleaseSummary;
     /**
      * 
+     * @type {PeriodicMissionSummary}
+     * @memberof Mission
+     */
+    readonly fromPeriodic: PeriodicMissionSummary;
+    /**
+     * 
      * @type {string}
-     * @memberof Task
+     * @memberof Mission
      */
     playbook?: string;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Mission
      */
     role?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Mission
      */
     tags?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Mission
      */
     inventories?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Mission
      */
     envvars?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Mission
      */
     extravars?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof Mission
      */
     forks?: number;
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof Mission
      */
     timeout?: number;
 }
@@ -151,9 +163,9 @@ export interface Task {
 
 
 /**
- * Check if a given object implements the Task interface.
+ * Check if a given object implements the Mission interface.
  */
-export function instanceOfTask(value: object): value is Task {
+export function instanceOfMission(value: object): value is Mission {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
@@ -164,14 +176,15 @@ export function instanceOfTask(value: object): value is Task {
     if (!('state' in value) || value['state'] === undefined) return false;
     if (!('output' in value) || value['output'] === undefined) return false;
     if (!('release' in value) || value['release'] === undefined) return false;
+    if (!('fromPeriodic' in value) || value['fromPeriodic'] === undefined) return false;
     return true;
 }
 
-export function TaskFromJSON(json: any): Task {
-    return TaskFromJSONTyped(json, false);
+export function MissionFromJSON(json: any): Mission {
+    return MissionFromJSONTyped(json, false);
 }
 
-export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task {
+export function MissionFromJSONTyped(json: any, ignoreDiscriminator: boolean): Mission {
     if (json == null) {
         return json;
     }
@@ -187,6 +200,7 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'state': StateEnumFromJSON(json['state']),
         'output': json['output'],
         'release': ReleaseSummaryFromJSON(json['release']),
+        'fromPeriodic': PeriodicMissionSummaryFromJSON(json['from_periodic']),
         'playbook': json['playbook'] == null ? undefined : json['playbook'],
         'role': json['role'] == null ? undefined : json['role'],
         'tags': json['tags'] == null ? undefined : json['tags'],
@@ -198,7 +212,7 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
     };
 }
 
-export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'state'|'output'|'release'> | null): any {
+export function MissionToJSON(value?: Omit<Mission, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'state'|'output'|'release'|'from_periodic'> | null): any {
     if (value == null) {
         return value;
     }

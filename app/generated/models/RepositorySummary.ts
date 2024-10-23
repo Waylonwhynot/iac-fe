@@ -30,7 +30,13 @@ export interface RepositorySummary {
      * @type {string}
      * @memberof RepositorySummary
      */
-    name: string;
+    readonly displayName: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RepositorySummary
+     */
+    url: string;
 }
 
 /**
@@ -38,7 +44,8 @@ export interface RepositorySummary {
  */
 export function instanceOfRepositorySummary(value: object): value is RepositorySummary {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('displayName' in value) || value['displayName'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +60,18 @@ export function RepositorySummaryFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'id': json['id'],
-        'name': json['name'],
+        'displayName': json['display_name'],
+        'url': json['url'],
     };
 }
 
-export function RepositorySummaryToJSON(value?: Omit<RepositorySummary, 'id'> | null): any {
+export function RepositorySummaryToJSON(value?: Omit<RepositorySummary, 'id'|'display_name'> | null): any {
     if (value == null) {
         return value;
     }
     return {
         
-        'name': value['name'],
+        'url': value['url'],
     };
 }
 

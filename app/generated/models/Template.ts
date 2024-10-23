@@ -13,12 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { StateEnum } from './StateEnum';
-import {
-    StateEnumFromJSON,
-    StateEnumFromJSONTyped,
-    StateEnumToJSON,
-} from './StateEnum';
 import type { UserSummary } from './UserSummary';
 import {
     UserSummaryFromJSON,
@@ -35,125 +29,123 @@ import {
 /**
  * 
  * @export
- * @interface Task
+ * @interface Template
  */
-export interface Task {
+export interface Template {
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof Template
      */
     readonly id: number;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof Template
      */
     readonly createdAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof Template
      */
     readonly updatedAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Task
+     * @memberof Template
      */
     readonly deletedAt: Date;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof Template
      */
     readonly createdBy: UserSummary;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof Template
      */
     readonly updatedBy: UserSummary;
     /**
      * 
      * @type {UserSummary}
-     * @memberof Task
+     * @memberof Template
      */
     readonly deletedBy: UserSummary;
     /**
      * 
-     * @type {StateEnum}
-     * @memberof Task
-     */
-    readonly state: StateEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof Task
-     */
-    readonly output: string;
-    /**
-     * 
      * @type {ReleaseSummary}
-     * @memberof Task
+     * @memberof Template
      */
-    readonly release: ReleaseSummary;
+    release: ReleaseSummary;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Template
      */
     playbook?: string;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Template
      */
     role?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Template
      */
     tags?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Template
      */
     inventories?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Template
      */
     envvars?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Task
+     * @memberof Template
      */
     extravars?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof Template
      */
     forks?: number;
     /**
      * 
      * @type {number}
-     * @memberof Task
+     * @memberof Template
      */
     timeout?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Template
+     */
+    name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Template
+     */
+    description?: string | null;
 }
 
-
-
 /**
- * Check if a given object implements the Task interface.
+ * Check if a given object implements the Template interface.
  */
-export function instanceOfTask(value: object): value is Task {
+export function instanceOfTemplate(value: object): value is Template {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
@@ -161,17 +153,16 @@ export function instanceOfTask(value: object): value is Task {
     if (!('createdBy' in value) || value['createdBy'] === undefined) return false;
     if (!('updatedBy' in value) || value['updatedBy'] === undefined) return false;
     if (!('deletedBy' in value) || value['deletedBy'] === undefined) return false;
-    if (!('state' in value) || value['state'] === undefined) return false;
-    if (!('output' in value) || value['output'] === undefined) return false;
     if (!('release' in value) || value['release'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
-export function TaskFromJSON(json: any): Task {
-    return TaskFromJSONTyped(json, false);
+export function TemplateFromJSON(json: any): Template {
+    return TemplateFromJSONTyped(json, false);
 }
 
-export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task {
+export function TemplateFromJSONTyped(json: any, ignoreDiscriminator: boolean): Template {
     if (json == null) {
         return json;
     }
@@ -184,8 +175,6 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'createdBy': UserSummaryFromJSON(json['created_by']),
         'updatedBy': UserSummaryFromJSON(json['updated_by']),
         'deletedBy': UserSummaryFromJSON(json['deleted_by']),
-        'state': StateEnumFromJSON(json['state']),
-        'output': json['output'],
         'release': ReleaseSummaryFromJSON(json['release']),
         'playbook': json['playbook'] == null ? undefined : json['playbook'],
         'role': json['role'] == null ? undefined : json['role'],
@@ -195,15 +184,18 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'extravars': json['extravars'] == null ? undefined : json['extravars'],
         'forks': json['forks'] == null ? undefined : json['forks'],
         'timeout': json['timeout'] == null ? undefined : json['timeout'],
+        'name': json['name'],
+        'description': json['description'] == null ? undefined : json['description'],
     };
 }
 
-export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'state'|'output'|'release'> | null): any {
+export function TemplateToJSON(value?: Omit<Template, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'> | null): any {
     if (value == null) {
         return value;
     }
     return {
         
+        'release': ReleaseSummaryToJSON(value['release']),
         'playbook': value['playbook'],
         'role': value['role'],
         'tags': value['tags'],
@@ -212,6 +204,8 @@ export function TaskToJSON(value?: Omit<Task, 'id'|'created_at'|'updated_at'|'de
         'extravars': value['extravars'],
         'forks': value['forks'],
         'timeout': value['timeout'],
+        'name': value['name'],
+        'description': value['description'],
     };
 }
 

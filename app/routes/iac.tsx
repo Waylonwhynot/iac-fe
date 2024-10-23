@@ -1,5 +1,5 @@
 import {Layout, Menu} from "antd";
-import {BranchesOutlined, CodeOutlined} from "@ant-design/icons";
+import {BranchesOutlined, CodeOutlined, BlockOutlined} from "@ant-design/icons";
 // import {useRoute} from "~/hooks"
 import {useState} from "react";
 
@@ -20,8 +20,14 @@ export default function () {
                     <Menu.Item icon={<BranchesOutlined/>} key="repository">
                         <Link to={`/iac/repository`}>Repository</Link>
                     </Menu.Item>
-                    <Menu.Item icon={<CodeOutlined/>} key="task">
-                        <Link to={`/iac/task`}>Task</Link>
+                    <Menu.Item icon={<CodeOutlined/>} key="mission">
+                        <Link to={`/iac/mission`}>Task</Link>
+                    </Menu.Item>
+                    <Menu.Item icon={<BlockOutlined/>} key="template">
+                        <Link to={`/iac/template`}>Template</Link>
+                    </Menu.Item>
+                    <Menu.Item icon={<BlockOutlined/>} key="schedule">
+                        <Link to={`/iac/schedule`}>ScheduleJob</Link>
                     </Menu.Item>
                 </Menu>
             </Sider>

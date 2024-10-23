@@ -16,78 +16,78 @@ import { mapValues } from '../runtime';
 /**
  * 消除只读字段
  * @export
- * @interface TaskCreation
+ * @interface MissionCreation
  */
-export interface TaskCreation {
+export interface MissionCreation {
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     release: number;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     playbook?: string;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     role?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     tags?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     inventories?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     envvars?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     extravars?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     forks?: number;
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof MissionCreation
      */
     timeout?: number;
 }
 
 /**
- * Check if a given object implements the TaskCreation interface.
+ * Check if a given object implements the MissionCreation interface.
  */
-export function instanceOfTaskCreation(value: object): value is TaskCreation {
+export function instanceOfMissionCreation(value: object): value is MissionCreation {
     if (!('release' in value) || value['release'] === undefined) return false;
     return true;
 }
 
-export function TaskCreationFromJSON(json: any): TaskCreation {
-    return TaskCreationFromJSONTyped(json, false);
+export function MissionCreationFromJSON(json: any): MissionCreation {
+    return MissionCreationFromJSONTyped(json, false);
 }
 
-export function TaskCreationFromJSONTyped(json: any, ignoreDiscriminator: boolean): TaskCreation {
+export function MissionCreationFromJSONTyped(json: any, ignoreDiscriminator: boolean): MissionCreation {
     if (json == null) {
         return json;
     }
@@ -105,7 +105,7 @@ export function TaskCreationFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-export function TaskCreationToJSON(value?: TaskCreation | null): any {
+export function MissionCreationToJSON(value?: MissionCreation | null): any {
     if (value == null) {
         return value;
     }

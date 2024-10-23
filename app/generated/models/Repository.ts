@@ -73,19 +73,43 @@ export interface Repository {
      * @type {string}
      * @memberof Repository
      */
-    readonly signature: string;
-    /**
-     * 
-     * @type {Blob}
-     * @memberof Repository
-     */
-    store: Blob;
+    readonly displayName: string;
     /**
      * 
      * @type {string}
      * @memberof Repository
      */
-    name: string;
+    readonly owner: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Repository
+     */
+    readonly name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Repository
+     */
+    token: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Repository
+     */
+    readonly webhookUrl: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Repository
+     */
+    url: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Repository
+     */
+    providerClass?: string;
 }
 
 /**
@@ -99,9 +123,12 @@ export function instanceOfRepository(value: object): value is Repository {
     if (!('createdBy' in value) || value['createdBy'] === undefined) return false;
     if (!('updatedBy' in value) || value['updatedBy'] === undefined) return false;
     if (!('deletedBy' in value) || value['deletedBy'] === undefined) return false;
-    if (!('signature' in value) || value['signature'] === undefined) return false;
-    if (!('store' in value) || value['store'] === undefined) return false;
+    if (!('displayName' in value) || value['displayName'] === undefined) return false;
+    if (!('owner' in value) || value['owner'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('token' in value) || value['token'] === undefined) return false;
+    if (!('webhookUrl' in value) || value['webhookUrl'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -122,20 +149,25 @@ export function RepositoryFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'createdBy': UserSummaryFromJSON(json['created_by']),
         'updatedBy': UserSummaryFromJSON(json['updated_by']),
         'deletedBy': UserSummaryFromJSON(json['deleted_by']),
-        'signature': json['signature'],
-        'store': json['store'],
+        'displayName': json['display_name'],
+        'owner': json['owner'],
         'name': json['name'],
+        'token': json['token'],
+        'webhookUrl': json['webhook_url'],
+        'url': json['url'],
+        'providerClass': json['provider_class'] == null ? undefined : json['provider_class'],
     };
 }
 
-export function RepositoryToJSON(value?: Omit<Repository, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'signature'> | null): any {
+export function RepositoryToJSON(value?: Omit<Repository, 'id'|'created_at'|'updated_at'|'deleted_at'|'created_by'|'updated_by'|'deleted_by'|'display_name'|'owner'|'name'|'webhook_url'> | null): any {
     if (value == null) {
         return value;
     }
     return {
         
-        'store': value['store'],
-        'name': value['name'],
+        'token': value['token'],
+        'url': value['url'],
+        'provider_class': value['providerClass'],
     };
 }
 

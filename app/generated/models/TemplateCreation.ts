@@ -16,78 +16,91 @@ import { mapValues } from '../runtime';
 /**
  * 消除只读字段
  * @export
- * @interface TaskCreation
+ * @interface TemplateCreation
  */
-export interface TaskCreation {
+export interface TemplateCreation {
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     release: number;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     playbook?: string;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     role?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     tags?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     inventories?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     envvars?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     extravars?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     forks?: number;
     /**
      * 
      * @type {number}
-     * @memberof TaskCreation
+     * @memberof TemplateCreation
      */
     timeout?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateCreation
+     */
+    name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateCreation
+     */
+    description?: string | null;
 }
 
 /**
- * Check if a given object implements the TaskCreation interface.
+ * Check if a given object implements the TemplateCreation interface.
  */
-export function instanceOfTaskCreation(value: object): value is TaskCreation {
+export function instanceOfTemplateCreation(value: object): value is TemplateCreation {
     if (!('release' in value) || value['release'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
-export function TaskCreationFromJSON(json: any): TaskCreation {
-    return TaskCreationFromJSONTyped(json, false);
+export function TemplateCreationFromJSON(json: any): TemplateCreation {
+    return TemplateCreationFromJSONTyped(json, false);
 }
 
-export function TaskCreationFromJSONTyped(json: any, ignoreDiscriminator: boolean): TaskCreation {
+export function TemplateCreationFromJSONTyped(json: any, ignoreDiscriminator: boolean): TemplateCreation {
     if (json == null) {
         return json;
     }
@@ -102,10 +115,12 @@ export function TaskCreationFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'extravars': json['extravars'] == null ? undefined : json['extravars'],
         'forks': json['forks'] == null ? undefined : json['forks'],
         'timeout': json['timeout'] == null ? undefined : json['timeout'],
+        'name': json['name'],
+        'description': json['description'] == null ? undefined : json['description'],
     };
 }
 
-export function TaskCreationToJSON(value?: TaskCreation | null): any {
+export function TemplateCreationToJSON(value?: TemplateCreation | null): any {
     if (value == null) {
         return value;
     }
@@ -120,6 +135,8 @@ export function TaskCreationToJSON(value?: TaskCreation | null): any {
         'extravars': value['extravars'],
         'forks': value['forks'],
         'timeout': value['timeout'],
+        'name': value['name'],
+        'description': value['description'],
     };
 }
 

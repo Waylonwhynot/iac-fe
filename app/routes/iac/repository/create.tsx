@@ -4,7 +4,8 @@ import { Section } from '~/components';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAsync } from '~/hooks';
 import { repositoryApi } from '~/api';
-import { CreateRepositoryRequest } from '~/generated';
+import { CreateRepositoryRequest, RepositoryCreation } from '~/generated';
+import Repository from '~/routes/iac/repository/index';
 
 
 const layout = {
@@ -17,8 +18,6 @@ const tailLayout = {
 
 export default function () {
     const navigate = useNavigate();
-    const [form] = Form.useForm<CreateRepositoryRequest>();
-    const [store, setStore] = useState<File>();
     const create = useAsync(repositoryApi.createRepository.bind(repositoryApi));
 
     useEffect(() => {
@@ -30,28 +29,23 @@ export default function () {
     const goHome = () => {
         navigate("/iac/repository");
     }
-    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-        setStore(event.target?.files?.[0]);
-    };
-
-    const handleSubmit = (values: CreateRepositoryRequest) => {
-        console.log('values: ', values);
-        if (values.name && store) {
-            const request = {name: values.name, store}
-            create.run(request)
-        }
+    const handleSubmit = (values: RepositoryCreation) => {
+        create.run({ repositoryCreation: values });
     }
 
     return (
         <>
             <PageHeader className="bg-white" title="Create Repository" onBack={goHome} />
             <Section>
-                <Form {...layout} method="post" onFinish={handleSubmit} form={form}>
-                    <Form.Item label="Name" name="name" required>
+                <Form {...layout} method="post" onFinish={handleSubmit}>
+                    <Form.Item label="URL" name="url" required>
                         <Input />
                     </Form.Item>
-                    <Form.Item label="File" name="store" required>
-                        <Input type="file" name="store" onChange={handleFileUpload}/>
+                    <Form.Item label="Token" name="token" required>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Provider" name="providerClass" initialValue="iac.repositories.GiteaRepositoryProvider">
+                        <Input />
                     </Form.Item>
                     <Form.Item {...tailLayout}>
                         <Button type="primary" htmlType="submit">Create</Button>

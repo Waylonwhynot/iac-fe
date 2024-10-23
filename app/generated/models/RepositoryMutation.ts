@@ -21,16 +21,22 @@ import { mapValues } from '../runtime';
 export interface RepositoryMutation {
     /**
      * 
-     * @type {Blob}
+     * @type {string}
      * @memberof RepositoryMutation
      */
-    store?: Blob;
+    token?: string;
     /**
      * 
      * @type {string}
      * @memberof RepositoryMutation
      */
-    name?: string;
+    url?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RepositoryMutation
+     */
+    providerClass?: string;
 }
 
 /**
@@ -50,8 +56,9 @@ export function RepositoryMutationFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'store': json['store'] == null ? undefined : json['store'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'token': json['token'] == null ? undefined : json['token'],
+        'url': json['url'] == null ? undefined : json['url'],
+        'providerClass': json['provider_class'] == null ? undefined : json['provider_class'],
     };
 }
 
@@ -61,8 +68,9 @@ export function RepositoryMutationToJSON(value?: RepositoryMutation | null): any
     }
     return {
         
-        'store': value['store'],
-        'name': value['name'],
+        'token': value['token'],
+        'url': value['url'],
+        'provider_class': value['providerClass'],
     };
 }
 

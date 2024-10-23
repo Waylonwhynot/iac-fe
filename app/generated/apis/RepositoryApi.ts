@@ -15,41 +15,69 @@
 
 import * as runtime from '../runtime';
 import type {
+  PaginatedReleaseList,
   PaginatedRepositoryList,
+  ReleaseSummary,
   Repository,
+  RepositoryCreation,
   RepositoryMutation,
 } from '../models/index';
 import {
+    PaginatedReleaseListFromJSON,
+    PaginatedReleaseListToJSON,
     PaginatedRepositoryListFromJSON,
     PaginatedRepositoryListToJSON,
+    ReleaseSummaryFromJSON,
+    ReleaseSummaryToJSON,
     RepositoryFromJSON,
     RepositoryToJSON,
+    RepositoryCreationFromJSON,
+    RepositoryCreationToJSON,
     RepositoryMutationFromJSON,
     RepositoryMutationToJSON,
 } from '../models/index';
 
 export interface CreateRepositoryRequest {
-    store: Blob;
-    name: string;
+    repositoryCreation: RepositoryCreation;
 }
 
 export interface DeleteRepositoryRequest {
     id: number;
 }
 
+export interface GetReleaseRequest {
+    id: number;
+}
+
+export interface GetRelease2Request {
+    id: number;
+    release: string;
+}
+
 export interface GetRepositoryRequest {
     id: number;
 }
 
-export interface ListRepositoriesRequest {
+export interface ListReleasesRequest {
+    id: number;
+    kw?: string;
     page?: number;
     size?: number;
 }
 
+export interface ListRepositoriesRequest {
+    kw?: string;
+    page?: number;
+    size?: number;
+}
+
+export interface SyncReleasesRequest {
+    id: number;
+}
+
 export interface UpdateRepositoryRequest {
     id: number;
-    store?: Blob;
-    name?: string;
+    repositoryMutation?: RepositoryMutation;
 }
 
 /**
@@ -60,23 +88,18 @@ export class RepositoryApi extends runtime.BaseAPI {
     /**
      */
     async createRepositoryRaw(requestParameters: CreateRepositoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Repository>> {
-        if (requestParameters['store'] == null) {
+        if (requestParameters['repositoryCreation'] == null) {
             throw new runtime.RequiredError(
-                'store',
-                'Required parameter "store" was null or undefined when calling createRepository().'
-            );
-        }
-
-        if (requestParameters['name'] == null) {
-            throw new runtime.RequiredError(
-                'name',
-                'Required parameter "name" was null or undefined when calling createRepository().'
+                'repositoryCreation',
+                'Required parameter "repositoryCreation" was null or undefined when calling createRepository().'
             );
         }
 
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -86,36 +109,12 @@ export class RepositoryApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const consumes: runtime.Consume[] = [
-            { contentType: 'multipart/form-data' },
-        ];
-        // @ts-ignore: canConsumeForm may be unused
-        const canConsumeForm = runtime.canConsumeForm(consumes);
-
-        let formParams: { append(param: string, value: any): any };
-        let useForm = false;
-        // use FormData to transmit files using content-type "multipart/form-data"
-        useForm = canConsumeForm;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new URLSearchParams();
-        }
-
-        if (requestParameters['store'] != null) {
-            formParams.append('store', requestParameters['store'] as any);
-        }
-
-        if (requestParameters['name'] != null) {
-            formParams.append('name', requestParameters['name'] as any);
-        }
-
         const response = await this.request({
             path: `/api/iac/repository/`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: formParams,
+            body: RepositoryCreationToJSON(requestParameters['repositoryCreation']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RepositoryFromJSON(jsonValue));
@@ -168,6 +167,95 @@ export class RepositoryApi extends runtime.BaseAPI {
 
     /**
      */
+    async getReleaseRaw(requestParameters: GetReleaseRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReleaseSummary>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling getRelease().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("BearerTokenAuthentication", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/iac/release/{id}/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ReleaseSummaryFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getRelease(requestParameters: GetReleaseRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReleaseSummary> {
+        const response = await this.getReleaseRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getRelease2Raw(requestParameters: GetRelease2Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReleaseSummary>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling getRelease2().'
+            );
+        }
+
+        if (requestParameters['release'] == null) {
+            throw new runtime.RequiredError(
+                'release',
+                'Required parameter "release" was null or undefined when calling getRelease2().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['release'] != null) {
+            queryParameters['release'] = requestParameters['release'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("BearerTokenAuthentication", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/iac/repository/{id}/release/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ReleaseSummaryFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getRelease2(requestParameters: GetRelease2Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReleaseSummary> {
+        const response = await this.getRelease2Raw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
     async getRepositoryRaw(requestParameters: GetRepositoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Repository>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
@@ -207,8 +295,63 @@ export class RepositoryApi extends runtime.BaseAPI {
 
     /**
      */
+    async listReleasesRaw(requestParameters: ListReleasesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedReleaseList>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling listReleases().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['kw'] != null) {
+            queryParameters['kw'] = requestParameters['kw'];
+        }
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['size'] != null) {
+            queryParameters['size'] = requestParameters['size'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("BearerTokenAuthentication", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/iac/repository/{id}/releases/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedReleaseListFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async listReleases(requestParameters: ListReleasesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedReleaseList> {
+        const response = await this.listReleasesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
     async listRepositoriesRaw(requestParameters: ListRepositoriesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRepositoryList>> {
         const queryParameters: any = {};
+
+        if (requestParameters['kw'] != null) {
+            queryParameters['kw'] = requestParameters['kw'];
+        }
 
         if (requestParameters['page'] != null) {
             queryParameters['page'] = requestParameters['page'];
@@ -247,11 +390,11 @@ export class RepositoryApi extends runtime.BaseAPI {
 
     /**
      */
-    async updateRepositoryRaw(requestParameters: UpdateRepositoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RepositoryMutation>> {
+    async syncReleasesRaw(requestParameters: SyncReleasesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling updateRepository().'
+                'Required parameter "id" was null or undefined when calling syncReleases().'
             );
         }
 
@@ -267,36 +410,52 @@ export class RepositoryApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const consumes: runtime.Consume[] = [
-            { contentType: 'multipart/form-data' },
-        ];
-        // @ts-ignore: canConsumeForm may be unused
-        const canConsumeForm = runtime.canConsumeForm(consumes);
+        const response = await this.request({
+            path: `/api/iac/repository/{id}/sync_releases/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
 
-        let formParams: { append(param: string, value: any): any };
-        let useForm = false;
-        // use FormData to transmit files using content-type "multipart/form-data"
-        useForm = canConsumeForm;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new URLSearchParams();
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async syncReleases(requestParameters: SyncReleasesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.syncReleasesRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
+    async updateRepositoryRaw(requestParameters: UpdateRepositoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RepositoryMutation>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling updateRepository().'
+            );
         }
 
-        if (requestParameters['store'] != null) {
-            formParams.append('store', requestParameters['store'] as any);
-        }
+        const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            formParams.append('name', requestParameters['name'] as any);
-        }
+        const headerParameters: runtime.HTTPHeaders = {};
 
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("BearerTokenAuthentication", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
         const response = await this.request({
             path: `/api/iac/repository/{id}/`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: formParams,
+            body: RepositoryMutationToJSON(requestParameters['repositoryMutation']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RepositoryMutationFromJSON(jsonValue));
