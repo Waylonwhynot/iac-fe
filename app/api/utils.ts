@@ -1,4 +1,4 @@
-import {backend} from '~/env';
+import {backend} from '~/settings';
 
 
 export const removeTrailingSlash = (input: string): string => {

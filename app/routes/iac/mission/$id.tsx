@@ -3,25 +3,26 @@ import { repositoryApi, missionApi } from '~/api';
 import { server } from '~/api/middlewares';
 import { Button, Descriptions, PageHeader, Space, Table, Tag } from 'antd';
 import dayjs from 'dayjs';
-import { ReleaseSection, Section } from '~/components';
-import { ReleaseSummary, Mission, MissionDetail } from '~/generated';
+import { ClientOnly, ReleaseSection, Section } from '~/components';
+import { ReleaseSummary, Mission, MissionDetail, MissionDetailFromJSON } from '~/generated';
 import Term from 'ansi_up';
 import { states } from './_states';
 import { useInterval } from 'ahooks';
-import { useAsync } from '~/hooks';
-import { useEffect, useState } from 'react';
+import { useAsync, useWebSocket } from '~/hooks';
+import { useEffect, useRef, useState } from 'react';
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
     DisconnectOutlined,
     ExclamationCircleOutlined, LogoutOutlined, MinusCircleOutlined, EnterOutlined, MinusSquareOutlined,
 } from '@ant-design/icons';
+import { websocketBasename } from '~/settings';
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const id = Number.parseInt(params['id'] || 'id');
     const mission = await missionApi.withMiddleware(server(request)).getMission({ id });
     const release = await repositoryApi.withMiddleware(server(request)).getRelease({ id: mission.release.id });
-    return json({ mission, release });
+    return json({ mission, release, websocketBasename });
 };
 
 const term = new Term();
@@ -29,29 +30,35 @@ const term = new Term();
 
 export default function() {
     const navigate = useNavigate();
-    const { mission: init, release } = useLoaderData<{ mission: MissionDetail, release: ReleaseSummary }>();
+    const { mission: init, release, websocketBasename } = useLoaderData<{ mission: MissionDetail, release: ReleaseSummary; websocketBasename:string }>();
     const [mission, setMission] = useState<MissionDetail>(init);
-    const getMission = useAsync(missionApi.getMission.bind(missionApi));
-    const [interval, setInterval] = useState<number | undefined>(2 * 1000);
+    // const getMission = useAsync(missionApi.getMission.bind(missionApi));
+    // const [interval, setInterval] = useState<number | undefined>(2 * 1000);
     const copyMission = useAsync(missionApi.copyMission.bind(missionApi));
+    const [webSocketUrl, setWebSocketUrl] = useState<string>();
+    const {
+        message,
+        disconnect,
+    } = useWebSocket<MissionDetail>(webSocketUrl, { transform: event => MissionDetailFromJSON(JSON.parse(event.data)) });
+    // const socket = useRef<WebSocket>();
+    //
+    // useInterval(() => {
+    //     if (getMission.state !== 'RUNNING') {
+    //         getMission.run({ id: mission.id });
+    //     }
+    // }, interval);
 
-    useInterval(() => {
-        if (getMission.state !== 'RUNNING') {
-            getMission.run({ id: mission.id });
-        }
-    }, interval);
-
-    useEffect(() => {
-        if (getMission.state === 'COMPLETED' && getMission.state) {
-            // @ts-ignore
-            setMission(getMission.data);
-        }
-    }, [getMission.state]);
+    // useEffect(() => {
+    //     if (getMission.state === 'COMPLETED' && getMission.state) {
+    //         // @ts-ignore
+    //         setMission(getMission.data);
+    //     }
+    // }, [getMission.state]);
 
     useEffect(() => {
 
         if ((mission?.state || 0) > 1) {
-            setInterval(undefined);
+            disconnect();
         }
     }, [mission.state]);
 
@@ -64,9 +71,17 @@ export default function() {
     useEffect(() => {
         setMission(init);
         if ((init?.state || 0) <= 1) {
-            setInterval(1000);
+            // setInterval(1000);
+            setWebSocketUrl(`${websocketBasename}/ws/iac/mission/${init.id}/`);
+
         }
     }, [init]);
+
+    useEffect(() => {
+        if (message) {
+            setMission(message);
+        }
+    }, [message]);
 
     const handleCopyMission = () => {
         copyMission.run({ id: mission.id });
@@ -106,7 +121,7 @@ export default function() {
     return (
         <>
             <PageHeader className="bg-white" title="Mission detail" subTitle={states[mission?.state || 0]}
-                        onBack={() => navigate('/idc/mission')}
+                        onBack={() => navigate('/iac/mission')}
                         extra={extra}
             />
             <Section title="Executed detail">
@@ -173,7 +188,9 @@ export default function() {
 
             </Section>
             <Section title="Output">
-                <pre dangerouslySetInnerHTML={{ __html: term.ansi_to_html(mission.output || '') }}></pre>
+                <ClientOnly>
+                    <pre dangerouslySetInnerHTML={{ __html: term.ansi_to_html(mission.output || '') }}></pre>
+                </ClientOnly>
             </Section>
         </>
     );

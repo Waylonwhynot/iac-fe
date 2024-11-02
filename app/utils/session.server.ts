@@ -1,5 +1,5 @@
 import { createCookieSessionStorage, redirect } from 'remix';
-import { sessionSecret } from '~/env';
+import { loginPath, sessionSecret } from '~/settings';
 import { Authorization } from '~/generated';
 import dayjs from 'dayjs';
 
@@ -43,7 +43,7 @@ export async function getAuthorization(request: Request): Promise<string | undef
         const searchParams = new URLSearchParams([
             ['redirectTo', encodeURIComponent(next)],
         ]);
-        throw redirect(`/login?${searchParams}`);
+        throw redirect(`${loginPath}?${searchParams}`);
     }
     if (token && typeof token === 'string') {
         return `Bearer ${token}`;

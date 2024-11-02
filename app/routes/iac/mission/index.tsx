@@ -32,8 +32,8 @@ export default function() {
         { title: 'Repo', dataIndex: ["release","repository", "displayName"], key: 'repository' },
         { title: 'Version', dataIndex: ["release","versionName",], key: 'version' },
         { title: 'Created_by', dataIndex: ['createdBy', 'username'], key: 'createdBy', },
-        { title: 'Execute time', dataIndex: 'createAt', key: 'createAt', render: dateRender },
-        { title: 'Finish time', dataIndex: 'updateAt', key: 'updateAt', render: dateRender },
+        { title: 'Execute time', dataIndex: 'createdAt', key: 'createdAt', render: dateRender },
+        { title: 'Finish time', dataIndex: 'updatedAt', key: 'updatedAt', render: dateRender },
         { title: 'State', dataIndex: 'state', key: 'state', render: (state: number) => states[state] },
         { title: '', dataIndex: 'id', key: 'id', render: (id: number) => <Link to={`/iac/mission/${id}`}>Detail</Link> },
     ];
@@ -42,7 +42,7 @@ export default function() {
         <>
             <PageHeader className="bg-white" title="Mission List" />
             <Section>
-                <Table columns={colums} dataSource={missions.results} pagination={pagination} />
+                <Table columns={colums} dataSource={missions.results} pagination={pagination} rowKey="id" />
             </Section>
         </>
     );
